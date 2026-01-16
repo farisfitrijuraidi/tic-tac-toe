@@ -9,14 +9,30 @@ const Gameboard = (() => {
             board[i].push(0);
         }
     }
-
     const getBoard = () => board;
+    const haveZero = () => board.some(row => row.includes(0));
+    const checkWinner = () => {
+        if (((board[0][0] === "X" && board[0][1] === "X" && board[0][2] === "X") || (board[0][0] === "O" && board[0][1] === "O" && board[0][2] === "O")) ||
+            ((board[1][0] === "X" && board[1][1] === "X" && board[1][2] === "X") || (board[1][0] === "O" && board[1][1] === "O" && board[1][2] === "O")) ||
+            ((board[2][0] === "X" && board[2][1] === "X" && board[2][2] === "X") || (board[2][0] === "O" && board[2][1] === "O" && board[2][2] === "O")) ||
+            ((board[0][0] === "X" && board[1][0] === "X" && board[2][0] === "X") || (board[0][0] === "O" && board[1][0] === "O" && board[2][0] === "O")) ||
+            ((board[0][1] === "X" && board[1][1] === "X" && board[2][1] === "X") || (board[0][1] === "O" && board[1][1] === "O" && board[2][1] === "O")) ||
+            ((board[0][2] === "X" && board[1][2] === "X" && board[2][2] === "X") || (board[0][2] === "O" && board[1][2] === "O" && board[2][2] === "O")) ||
+            ((board[0][0] === "X" && board[1][1] === "X" && board[2][2] === "X") || (board[0][0] === "O" && board[1][1] === "O" && board[2][2] === "O")) ||
+            ((board[0][2] === "X" && board[1][1] === "X" && board[2][0] === "X") || (board[0][2] === "O" && board[1][1] === "O" && board[2][0] === "O")))  {
+            return true;
+        } else {
+            return false;
+        }
+    };
     const placeMarker = (row, column, token) => {
         board[row][column] = token;
     };
     return {
         getBoard,
-        placeMarker
+        haveZero,
+        placeMarker,
+        checkWinner
     };
 })();
 
@@ -40,6 +56,13 @@ const GameController = ((playerOneName = "Faris", playerTwoName = "Fitri") => {
     }
     const playRound = (row, column) => {
         Gameboard.placeMarker(row, column, getActivePlayer().token);
+        if (Gameboard.checkWinner()) {
+            console.log(`${getActivePlayer().name} WINS!`);
+            return;
+        } else if (Gameboard.checkWinner() === false && Gameboard.haveZero() === false) {
+            console.log("DRAW!");
+            return;
+        }
         switchPlayerTurn();
         console.log(Gameboard.getBoard());
     };
