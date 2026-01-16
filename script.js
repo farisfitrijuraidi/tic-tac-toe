@@ -11,8 +11,12 @@ const Gameboard = (function() {
     }
 
     const getBoard = () => board;
+    const placeMarker = (row, column, token) => {
+        board[row][column] = token;
+    };
     return {
-        getBoard
+        getBoard,
+        placeMarker
     };
 })();
 
