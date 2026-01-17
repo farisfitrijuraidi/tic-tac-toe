@@ -71,3 +71,24 @@ const GameController = ((playerOneName = "Faris", playerTwoName = "Fitri") => {
         getActivePlayer
     };
 })();
+
+const DisplayController = (() => {
+    const container = document.querySelector('#gameboard');
+    const renderBoard = () => {
+        container.innerHTML = '';
+        Gameboard.getBoard().forEach(row => {
+            row.forEach(item => {
+                const div = document.createElement('div');
+                div.classList.add('div-board');
+                div.textContent = item === 0 ? '' : item ;
+                console.log(item);
+                container.appendChild(div);
+            })
+        })
+    }
+    return {
+        renderBoard
+    };
+})();
+
+DisplayController.renderBoard();

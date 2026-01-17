@@ -1,0 +1,23 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+#gameboard {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    height: 600px;
+    justify-content: center;
+    align-content: center;
+}
+
+.div-board {
+    border: 1px solid black;
+    height: 100px;
+    padding: 20px;
+    font-size: 3rem;
+    text-align: center;
+}
