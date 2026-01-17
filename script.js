@@ -36,7 +36,7 @@ const Gameboard = (() => {
     };
 })();
 
-const GameController = ((playerOneName = "Faris", playerTwoName = "Fitri") => {
+const GameController = ((playerOneName = "Faris", playerTwoName = "Asyiqin") => {
     const players = [
         {
             name: playerOneName,
@@ -76,18 +76,27 @@ const DisplayController = (() => {
     const container = document.querySelector('#gameboard');
     const renderBoard = () => {
         container.innerHTML = '';
-        Gameboard.getBoard().forEach(row => {
-            row.forEach(item => {
+        Gameboard.getBoard().forEach((row, rowIndex) => {
+            row.forEach((item, colIndex) => {
                 const div = document.createElement('div');
                 div.classList.add('div-board');
+                div.dataset.rowIndex = rowIndex;
+                div.dataset.colIndex = colIndex;
                 div.textContent = item === 0 ? '' : item ;
-                console.log(item);
                 container.appendChild(div);
             })
         })
     }
+    const clickSchema = (e) => {
+        const targetRow = e.target.dataset.rowIndex;
+        const targetColumn = e.target.dataset.colIndex;
+        GameController.playRound(targetRow, targetColumn);
+        renderBoard();
+    }
+    container.addEventListener('click', clickSchema);
     return {
-        renderBoard
+        renderBoard,
+        clickSchema
     };
 })();
 
