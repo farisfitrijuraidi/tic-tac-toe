@@ -1,3 +1,13 @@
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('./Roboto_woff/Roboto-Regular.woff2') format('woff2'),
+        url('./Roboto_woff/Roboto-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -9,15 +19,57 @@ body {
 #gameboard {
     display: grid;
     grid-template-columns: repeat(3, 100px);
-    height: 600px;
+    height: 300px;
     justify-content: center;
     align-content: center;
 }
 
 .div-board {
+    font-family: 'Roboto';
     border: 1px solid black;
     height: 100px;
     padding: 20px;
     font-size: 3rem;
     text-align: center;
+}
+
+.winner,
+.turn {
+    font-family: 'Roboto';
+    text-align: center;
+    height: 50px;
+    font-size: 2rem;
+    margin-bottom: 0;
+}
+
+.turn {
+    margin-top: 0;
+}
+
+.container-btn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+}
+
+.restart-btn {
+    font-family: 'Roboto';
+    font-size: 1.2rem;
+    border-radius: 1rem;
+    border: none;
+    background-color: #1992D4;
+    color: #fdfdff;
+    padding: 8px 1rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.restart-btn:hover {
+    filter: brightness(1.1);
+}
+
+.restart-btn:active {
+    transform: translateY(2px);
+    filter: brightness(0.9);
 }

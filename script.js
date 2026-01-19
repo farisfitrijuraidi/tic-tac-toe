@@ -1,7 +1,7 @@
 const Gameboard = (() => {
     const rows = 3;
     const columns = 3;
-    const board = [];
+    let board = [];
 
     for (let i = 0; i < rows; i++) {
         board[i] = [];
@@ -26,17 +26,74 @@ const Gameboard = (() => {
         }
     };
     const placeMarker = (row, column, token) => {
-        board[row][column] = token;
+        if (board[row][column] === 'X' || board[row][column] === 'O') {
+            return false;
+        } else {
+            board[row][column] = token;
+        }
+    }
+    const clearBoard = () => {
+        board.forEach(row => row.fill(0));
     };
     return {
         getBoard,
         haveZero,
         placeMarker,
-        checkWinner
+        checkWinner,
+        clearBoard
+    };
+})();
+
+const DisplayController = (() => {
+    const container = document.querySelector('#gameboard');
+    const p = document.querySelector('.winner');
+    const p2 = document.querySelector('.turn');
+    const restartButton = document.querySelector('.restart-btn');
+
+    const renderBoard = () => {
+        container.innerHTML = '';
+        Gameboard.getBoard().forEach((row, rowIndex) => {
+            row.forEach((item, colIndex) => {
+                const div = document.createElement('div');
+                div.classList.add('div-board');
+                div.dataset.rowIndex = rowIndex;
+                div.dataset.colIndex = colIndex;
+                div.textContent = item === 0 ? '' : item ;
+                container.appendChild(div);
+                div.addEventListener('click', clickSchema);
+            })
+        })
+    };
+    const clickSchema = (e) => {
+        const targetRow = e.target.dataset.rowIndex;
+        const targetColumn = e.target.dataset.colIndex;
+        GameController.playRound(targetRow, targetColumn);
+        renderBoard();
+    };
+    const announceWinner = (message) => {
+        p.textContent = message;
+    };
+    const announceTurn = (message) => {
+        p2.textContent = message;
+    };
+    const restartGame = () => {
+        restartButton.addEventListener('click', () => {
+            Gameboard.clearBoard();
+            GameController.resetGame();
+            renderBoard();
+        })
+    }
+    return {
+        renderBoard,
+        clickSchema,
+        announceWinner,
+        announceTurn,
+        restartGame
     };
 })();
 
 const GameController = ((playerOneName = "Faris", playerTwoName = "Asyiqin") => {
+    let isGameOver = false;
     const players = [
         {
             name: playerOneName,
@@ -49,55 +106,38 @@ const GameController = ((playerOneName = "Faris", playerTwoName = "Asyiqin") => 
     ];
     let activePlayer = players[0];
     const getActivePlayer = () => activePlayer;
-    console.log(`${getActivePlayer().name}'s turn.`);
+    DisplayController.announceTurn(`${getActivePlayer().name}'s turn`);
     const switchPlayerTurn = () => {
         activePlayer = activePlayer === players[0] ? players[1] : players[0];
-        console.log(`${getActivePlayer().name}'s turn.`);
+        DisplayController.announceTurn(`${getActivePlayer().name}'s turn`);
     }
     const playRound = (row, column) => {
-        Gameboard.placeMarker(row, column, getActivePlayer().token);
+        if (isGameOver) return;
+        if (Gameboard.placeMarker(row, column, getActivePlayer().token) === false) {
+            return;
+        }
         if (Gameboard.checkWinner()) {
-            console.log(`${getActivePlayer().name} WINS!`);
+            DisplayController.announceWinner(`${getActivePlayer().name} WINS!`);
+            isGameOver = !isGameOver;
             return;
         } else if (Gameboard.checkWinner() === false && Gameboard.haveZero() === false) {
-            console.log("DRAW!");
+            DisplayController.announceWinner("DRAW!");
             return;
         }
         switchPlayerTurn();
-        console.log(Gameboard.getBoard());
+    };
+    const resetGame = () => {
+        isGameOver = false;
+        activePlayer = players[0];
+        DisplayController.announceWinner('');
+        DisplayController.announceTurn(`${getActivePlayer().name}'s turn`);
     };
     return {
         playRound,
-        getActivePlayer
-    };
-})();
-
-const DisplayController = (() => {
-    const container = document.querySelector('#gameboard');
-    const renderBoard = () => {
-        container.innerHTML = '';
-        Gameboard.getBoard().forEach((row, rowIndex) => {
-            row.forEach((item, colIndex) => {
-                const div = document.createElement('div');
-                div.classList.add('div-board');
-                div.dataset.rowIndex = rowIndex;
-                div.dataset.colIndex = colIndex;
-                div.textContent = item === 0 ? '' : item ;
-                container.appendChild(div);
-            })
-        })
-    }
-    const clickSchema = (e) => {
-        const targetRow = e.target.dataset.rowIndex;
-        const targetColumn = e.target.dataset.colIndex;
-        GameController.playRound(targetRow, targetColumn);
-        renderBoard();
-    }
-    container.addEventListener('click', clickSchema);
-    return {
-        renderBoard,
-        clickSchema
+        getActivePlayer,
+        resetGame
     };
 })();
 
 DisplayController.renderBoard();
+DisplayController.restartGame();
