@@ -92,7 +92,7 @@ const DisplayController = (() => {
     };
 })();
 
-const GameController = ((playerOneName = "Faris", playerTwoName = "Asyiqin") => {
+const GameController = ((playerOneName = "Player One", playerTwoName = "Player Two") => {
     let isGameOver = false;
     const players = [
         {
